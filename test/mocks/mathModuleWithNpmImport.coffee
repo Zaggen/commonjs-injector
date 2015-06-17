@@ -1,9 +1,10 @@
 injector (@dependencies)->
   pi = @import(__dirname, './PiModule')
-  math =
+  def = @import('def-inc')
+  math = def.Object(
     square: (x)->  x * x
     pi: pi
-    status: injector.getStatus()
+  )
 
   return math
 

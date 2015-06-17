@@ -9,7 +9,7 @@ self =
   inject: (moduleWrapperFn)->
     definedModule = null
     moduleWrapperFn.import = self._import
-    definedModule = if config.bypassInjection then moduleWrapperFn.call(moduleWrapperFn) else moduleWrapperFn
+    definedModule = if config.bypassInjection then moduleWrapperFn.call(moduleWrapperFn) else moduleWrapperFn.bind(moduleWrapperFn)
 
   getModule: ->
     t = definedModule
@@ -21,14 +21,21 @@ self =
 
   _import: (pathFragments...)->
     fragsLen = pathFragments.length
-    if fragsLen is 1 then pathFragments.splice(0, 0, cwd)
-
     moduleName = pathFragments[fragsLen - 1].split('/').pop()
 
     if @dependencies?[moduleName]?
       @dependencies[moduleName]
     else
-      filePath = path.resolve.apply(@, pathFragments)
+      isNpmModule = pathFragments[0].indexOf('/') is -1
+      if fragsLen is 1
+        if isNpmModule
+          filePath = pathFragments[0]
+        else
+          pathFragments.splice(0, 0, cwd)
+          filePath = path.resolve.apply(@, pathFragments)
+      else
+        filePath = path.resolve.apply(@, pathFragments)
+
       require(filePath)
 
   getStatus: ->

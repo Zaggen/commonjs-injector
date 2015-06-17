@@ -3,7 +3,6 @@ injector (@dependencies)->
   math =
     square: (x)->  x * x
     pi: pi
-    status: injector.getStatus()
 
   return math
 
