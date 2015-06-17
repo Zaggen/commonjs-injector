@@ -2,7 +2,7 @@
 Dependency injection module system
 
 
-##Example using a sails.js model and def-inc module
+## Example using a sails.js model and def-inc module
 
 - Require the injector globally so there is a single location to modify the configuration of the injector.
 ```coffeescript
