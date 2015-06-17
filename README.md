@@ -26,7 +26,7 @@ injector.set (@dependencies)->
 
 module.exports = injector.get()
 ```
-- Here we require more modules, @require, works exactly the same as require which this fn uses internally.
+- Here we import more modules, @import, works almost the same as require which this fn uses internally.
 ```coffeescript
 # api/models/Product.coffee
 injector.set (@dependencies)->
