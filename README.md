@@ -1,7 +1,6 @@
 # commonjs-injector
 Dependency injection module system
 
-Notice: I'll be developing this module soon, but here is the api in case you are interested.
 
 ##Example using a sails.js model and def-inc module
 
@@ -9,7 +8,7 @@ Notice: I'll be developing this module soon, but here is the api in case you are
 ```coffeescript
 # App start point
 global.injector = require('commonjs-injector')
-injector.byPassInjection(true)
+injector.byPassInjection(true) # Default behavior
 ```
 - Use it as a wrapper of your module, it will work pretty much the same as a current commonjs module, with the exception
 of the injector call, and that calls to require should be make throught @, so we can use the injector version of the require fn.
@@ -17,7 +16,7 @@ of the injector call, and that calls to require should be make throught @, so we
 # api/abstract/AuthModel.coffee
 injector (@dependencies)->
   # Module Dependencies
-  def       = @require('def-inc')
+  def = @import('def-inc')
 
   # Module
   @authModel = def.Obj(
@@ -25,16 +24,16 @@ injector (@dependencies)->
       #some code
   )
 
-.exports()
+module.exports = injector.getModule()
 ```
 - Here we require more modules, @require, works exactly the same as require which this fn uses internally.
 ```coffeescript
 # api/models/Product.coffee
 injector (@dependencies)->
   # Module Dependencies
-  def       = @require('def-inc')
-  baseModel = @require('./abtract/baseModel')
-  AuthModel = @require('.abstract/AuthModel')
+  def       = @import('def-inc')
+  baseModel = @import(__dirname, './abtract/baseModel') # Relative to the folder
+  AuthModel = @import('./abstract/AuthModel') # Relative to cwd
 
   # Module
   @products = def.Obj(
@@ -51,7 +50,7 @@ injector (@dependencies)->
       next()
   )
 
-.exports()
+module.exports = injector.getModule()
 ```
 ### Inject dependencies
 - Now in our tests, we configure the injector to use externally injected modules, this means, that every call to require, should return a function that accepts an object, which keys are the name of the module (filename) and its values are the module itself (or a mock obj, or anything you want), you can inject 0 or more dependencies, those that are not specified will use the ones defined in the module itself.
