@@ -1,6 +1,7 @@
-injector (@dependencies)->
+injector.set (@dependencies)->
   math =
     square: (x)->  x * x
-    status: injector.getStatus()
 
-module.exports = injector.getModule()
+  return math
+
+module.exports = injector.get()

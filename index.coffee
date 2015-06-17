@@ -6,12 +6,14 @@ config = {bypassInjection: true}
 
 # Module
 self =
-  inject: (moduleWrapperFn)->
+  set: (wrapperFn)->
     definedModule = null
-    moduleWrapperFn.import = self._import
-    definedModule = if config.bypassInjection then moduleWrapperFn.call(moduleWrapperFn) else moduleWrapperFn.bind(moduleWrapperFn)
+    # We add the import method to the passed fn to allow the end user to call it with in that fn
+    wrapperFn.import = self._import
+    definedModule = if config.bypassInjection then wrapperFn.call(wrapperFn) else wrapperFn.bind(wrapperFn)
 
-  getModule: ->
+  # Returns the fn wrapper or defined module
+  get: ->
     t = definedModule
     definedModule = null
     return t
@@ -38,14 +40,10 @@ self =
 
       require(filePath)
 
-  getStatus: ->
-    return config
-
 # We define our public api inside the injector fn itself
-injector = self.inject
-injector.getModule = self.getModule
-injector.bypassInjection = self.bypassInjection
-injector.getStatus = self.getStatus
-
+injector =
+  set: self.set
+  get: self.get
+  bypassInjection: self.bypassInjection
 
 module.exports = injector

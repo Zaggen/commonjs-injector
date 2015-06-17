@@ -1,4 +1,4 @@
-injector (@dependencies)->
+injector.set (@dependencies)->
   pi = @import(__dirname, './PiModule')
   math =
     square: (x)->  x * x
@@ -6,4 +6,4 @@ injector (@dependencies)->
 
   return math
 
-module.exports = injector.getModule()
+module.exports = injector.get()

@@ -14,12 +14,12 @@
   };
 
   self = {
-    inject: function(moduleWrapperFn) {
+    set: function(wrapperFn) {
       definedModule = null;
-      moduleWrapperFn["import"] = self._import;
-      return definedModule = config.bypassInjection ? moduleWrapperFn.call(moduleWrapperFn) : moduleWrapperFn.bind(moduleWrapperFn);
+      wrapperFn["import"] = self._import;
+      return definedModule = config.bypassInjection ? wrapperFn.call(wrapperFn) : wrapperFn.bind(wrapperFn);
     },
-    getModule: function() {
+    get: function() {
       var t;
       t = definedModule;
       definedModule = null;
@@ -49,19 +49,14 @@
         }
         return require(filePath);
       }
-    },
-    getStatus: function() {
-      return config;
     }
   };
 
-  injector = self.inject;
-
-  injector.getModule = self.getModule;
-
-  injector.bypassInjection = self.bypassInjection;
-
-  injector.getStatus = self.getStatus;
+  injector = {
+    set: self.set,
+    get: self.get,
+    bypassInjection: self.bypassInjection
+  };
 
   module.exports = injector;
 

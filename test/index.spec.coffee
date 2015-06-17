@@ -20,7 +20,7 @@ describe 'commonjs-injector Module', ->
      expect(mathModule.pi).to.equal(Math.PI)
      delete require.cache[mockWithImportPath]
 
-   it.only 'should let you use @import inside the injector fn to require npm modules', ->
+   it 'should let you use @import inside the injector fn to require npm modules', ->
      mathModule = require(mockWithNpmImportPath)
      expect(mathModule.pi).to.equal(Math.PI)
      delete require.cache[mockWithNpmImportPath]
@@ -32,6 +32,7 @@ describe 'commonjs-injector Module', ->
    it 'should let you export a fn wrapper that accepts an object with dependencies and returns the module when called', ->
      mathModuleWrapper = require(mockPath)
      expect(mathModuleWrapper).to.be.an('function')
+
      mathModule = mathModuleWrapper()
      expect(mathModule).to.be.an('object')
      delete require.cache[mockPath]

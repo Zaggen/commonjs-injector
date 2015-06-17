@@ -30,7 +30,7 @@
         expect(mathModule.pi).to.equal(Math.PI);
         return delete require.cache[mockWithImportPath];
       });
-      return it.only('should let you use @import inside the injector fn to require npm modules', function() {
+      return it('should let you use @import inside the injector fn to require npm modules', function() {
         var mathModule;
         mathModule = require(mockWithNpmImportPath);
         expect(mathModule.pi).to.equal(Math.PI);
