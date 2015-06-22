@@ -3,6 +3,7 @@ global.injector = require('../index')
 mockPath = require.resolve('./mocks/mathModule')
 mockWithImportPath = require.resolve('./mocks/mathModuleWithImport')
 mockWithNpmImportPath = require.resolve('./mocks/mathModuleWithNpmImport')
+mockWithGlobalDep = require.resolve('./mocks/mockWithGlobalDep')
 
 describe 'commonjs-injector Module', ->
  describe 'When bypassInjection is set to true (default)', ->
@@ -13,17 +14,28 @@ describe 'commonjs-injector Module', ->
      mathModule = require(mockPath)
      expect(mathModule).to.be.an('object')
      expect(mathModule.square(5)).to.equal(25)
+
      delete require.cache[mockPath]
 
    it 'should let you use @import inside the injector fn to require regular modules', ->
      mathModule = require(mockWithImportPath)
      expect(mathModule.pi).to.equal(Math.PI)
+
      delete require.cache[mockWithImportPath]
 
    it 'should let you use @import inside the injector fn to require npm modules', ->
      mathModule = require(mockWithNpmImportPath)
      expect(mathModule.pi).to.equal(Math.PI)
+
      delete require.cache[mockWithNpmImportPath]
+
+   it 'should let you use @import.global inside the injector fn to require a global', ->
+     mathModule = require(mockWithGlobalDep)
+     global.PI = Math.PI
+     expect(mathModule.pi).to.equal(global.PI)
+
+     delete require.cache[mockWithGlobalDep]
+     delete global.PI
 
  describe 'When bypassInjection is set to false', ->
    beforeEach ->
@@ -51,3 +63,5 @@ describe 'commonjs-injector Module', ->
      expect(mathModule).to.be.an('object')
      expect(mathModule.pi).to.equal('Mocked PI Value')
      delete require.cache[mockWithImportPath]
+
+   it 'should'
