@@ -10,6 +10,7 @@ self =
     definedModule = null
     # We add the import method to the passed fn to allow the end user to call it with in that fn
     wrapperFn.import = self._import
+    wrapperFn.importGlobal = self._importGlobal
     definedModule = if config.bypassInjection then wrapperFn.call(wrapperFn) else wrapperFn.bind(wrapperFn)
 
   # Returns the fn wrapper or defined module
@@ -39,6 +40,16 @@ self =
         filePath = path.resolve.apply(@, pathFragments)
 
       require(filePath)
+
+  _importGlobal: (globalName)->
+    console.log 'deps', @dependencies
+    if @dependencies?[globalName]?
+      @dependencies[globalName]
+    else
+      console.log globalName
+      console.log global[globalName]
+      global[globalName]
+
 
 # We define our public api inside the injector fn itself
 injector =
