@@ -34,6 +34,7 @@ injector.set (@dependencies)->
   def       = @import('def-inc')
   baseModel = @import(__dirname, './abtract/baseModel') # Relative to the folder
   AuthModel = @import('./abstract/AuthModel') # Relative to cwd
+  roles     = @importGlobal('roles') # gets global.Roles
 
   # Module
   @products = def.Obj(
@@ -59,10 +60,12 @@ global.injector.byPassInjection(false)
 
 defMock = {Obj: -> console.log 'mocked def'}
 authModelMock = {}
+rolesMock = {}
 
 baseModel = require('./abtract/baseModel')({
  'AuthModel': authModelMock,
  'def-inc': defMock
+ 'roles': rolesMock
 })
 ```
 
