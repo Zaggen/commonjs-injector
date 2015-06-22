@@ -46,8 +46,6 @@ self =
     if @dependencies?[globalName]?
       @dependencies[globalName]
     else
-      console.log globalName
-      console.log global[globalName]
       global[globalName]
 
 

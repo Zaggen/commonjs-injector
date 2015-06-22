@@ -17,6 +17,7 @@
     set: function(wrapperFn) {
       definedModule = null;
       wrapperFn["import"] = self._import;
+      wrapperFn.importGlobal = self._importGlobal;
       return definedModule = config.bypassInjection ? wrapperFn.call(wrapperFn) : wrapperFn.bind(wrapperFn);
     },
     get: function() {
@@ -48,6 +49,15 @@
           filePath = path.resolve.apply(this, pathFragments);
         }
         return require(filePath);
+      }
+    },
+    _importGlobal: function(globalName) {
+      var ref;
+      console.log('deps', this.dependencies);
+      if (((ref = this.dependencies) != null ? ref[globalName] : void 0) != null) {
+        return this.dependencies[globalName];
+      } else {
+        return global[globalName];
       }
     }
   };
