@@ -53,7 +53,6 @@
     },
     _importGlobal: function(globalName) {
       var ref;
-      console.log('deps', this.dependencies);
       if (((ref = this.dependencies) != null ? ref[globalName] : void 0) != null) {
         return this.dependencies[globalName];
       } else {

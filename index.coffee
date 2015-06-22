@@ -42,7 +42,6 @@ self =
       require(filePath)
 
   _importGlobal: (globalName)->
-    console.log 'deps', @dependencies
     if @dependencies?[globalName]?
       @dependencies[globalName]
     else
