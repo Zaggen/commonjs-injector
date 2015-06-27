@@ -17,14 +17,26 @@ describe 'commonjs-injector Module', ->
   it 'should have a "bypassInjection" method', ->
     expect(injector.bypassInjection).to.be.a('function')
 
-  it 'should have an "env" method', ->
-    expect(injector.env).to.be.a('function')
+  it 'should have an "setEnv" method', ->
+    expect(injector.setEnv).to.be.a('function')
+
+  it 'should have an "getEnv" method', ->
+    expect(injector.getEnv).to.be.a('function')
 
   it 'should return the module when calling the bypassInjection method', ->
     expect(injector.bypassInjection(true)).to.equal(injector)
 
-  it 'should return the module when calling the env method', ->
-    expect(injector.env(true)).to.equal(injector)
+  it 'should return the module when calling the "setEnv" method', ->
+    expect(injector.setEnv('testing')).to.equal(injector)
+
+  it 'should throw an error when setEnv is called with an invalid environment string', ->
+    fn = ->
+      injector.setEnv('lorem')
+    expect(fn).to.throw(Error)
+
+  it 'should return the previously defined environment when calling "getEnv"', ->
+    expect(injector.setEnv('testing')).to.equal(injector)
+    expect(injector.getEnv()).to.equal('testing')
 
   describe 'When bypassInjection is set to true (default)', ->
     beforeEach ->
