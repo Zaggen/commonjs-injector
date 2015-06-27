@@ -3,6 +3,7 @@ path = require('path')
 cwd = process.cwd()
 definedModule = null
 config = {bypassInjection: true}
+ENV = 'production'
 
 # Module
 self =
@@ -22,6 +23,19 @@ self =
   bypassInjection: (boolean)->
     config.bypassInjection = boolean
     this
+
+  setEnv: (environment)->
+    ENV = environment.toLowerCase()
+    switch ENV
+      when "production" then  config.bypassInjection = true
+      when "testing" then  config.bypassInjection = false
+      else
+        errMsg = 'You should set the environment of the injector as either testing or production'
+        throw new Error errMsg
+
+    return this
+
+  getEnv: -> ENV
 
   _import: (pathFragments...)->
     fragsLen = pathFragments.length
@@ -53,6 +67,8 @@ self =
 injector =
   set: self.set
   get: self.get
+  getEnv: self.getEnv
+  setEnv: self.setEnv
   bypassInjection: self.bypassInjection
 
 module.exports = injector
