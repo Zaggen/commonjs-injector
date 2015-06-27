@@ -27,8 +27,8 @@ self =
   setEnv: (environment)->
     ENV = environment.toLowerCase()
     switch ENV
-      when "production" then  config.bypassInjection = true
-      when "testing" then  config.bypassInjection = false
+      when "production" then config.bypassInjection = true
+      when "testing" then config.bypassInjection = false
       else
         errMsg = 'You should set the environment of the injector as either testing or production'
         throw new Error errMsg
