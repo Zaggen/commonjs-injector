@@ -21,6 +21,7 @@ self =
 
   bypassInjection: (boolean)->
     config.bypassInjection = boolean
+    this
 
   _import: (pathFragments...)->
     fragsLen = pathFragments.length

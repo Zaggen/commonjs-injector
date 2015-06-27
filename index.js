@@ -27,7 +27,8 @@
       return t;
     },
     bypassInjection: function(boolean) {
-      return config.bypassInjection = boolean;
+      config.bypassInjection = boolean;
+      return this;
     },
     _import: function() {
       var filePath, fragsLen, isNpmModule, moduleName, pathFragments, ref;
