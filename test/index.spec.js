@@ -17,6 +17,9 @@
   mockWithGlobalDep = require.resolve('./mocks/mockWithGlobalDep');
 
   describe('commonjs-injector Module', function() {
+    it('should return the module when calling the bypassInjection method', function() {
+      return expect(injector.bypassInjection(true)).to.equal(injector);
+    });
     describe('When bypassInjection is set to true (default)', function() {
       beforeEach(function() {
         return injector.bypassInjection(true);
