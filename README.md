@@ -7,7 +7,7 @@ Dependency injection module system
 - Require the injector globally so there is a single location to modify the configuration of the injector.
 ```coffeescript
 # App start point
-global.injector = require('commonjs-injector').setEnvironment('production')
+global.injector = require('commonjs-injector').setEnv('production')
 ```
 - Use it as a wrapper of your module, it will work pretty much the same as a current commonjs module, with the
 exception of the injector call, and that calls to @import that will work similar to node require()
@@ -58,7 +58,7 @@ this means, that every call to require, should return a function that accepts an
 module (filename) and its values are the module itself (or a mock obj, or anything you want), you can inject 0 or more
 dependencies, those that are not specified will use the ones defined in the module itself.
 ```coffeescript
-global.injector.setEnvironment('testing')
+global.injector.setEnv('testing')
 
 defMock = {Obj: -> console.log 'mocked def'}
 authModelMock = {}
