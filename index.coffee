@@ -1,50 +1,84 @@
-# Private Shared data
-path = require('path')
-cwd = process.cwd()
-definedModule = null
-config = {bypassInjection: true}
-ENV = 'production'
+injector = require('def-inc').Module ->
+  # Private Shared data
+  definedModule = null
+  config = {bypassInjection: true}
+  ENV = 'production'
+  path = require('path')
+  cwd = process.cwd()
 
-# Module
-self =
-  set: (wrapperFn)->
-    definedModule = null
+  ###*
+  * @public
+  * Sets a wrapper to add variables that use @import inside the passed fn to require modules,
+  * this allows to inject dependencies via the fn wrapper instead of the actually required
+  * modules.
+  * @param {function} wrapperFn - Function where the return value is what is exported later
+  ###
+  @set = (wrapperFn)->
     # We add the import method to the passed fn to allow the end user to call it with in that fn
-    wrapperFn.import = self._import
-    wrapperFn.importGlobal = self._importGlobal
+    wrapperFn.import = _import
+    wrapperFn.importGlobal = _importGlobal
     definedModule = if config.bypassInjection then wrapperFn.call(wrapperFn) else wrapperFn.bind(wrapperFn)
 
-  # Returns the fn wrapper or defined module
-  get: ->
+  ###*
+  * @public
+  * Returns the defined module, which could be the wrapper fn defined in the @set method
+  * or what ever was returned from that function, depending of the setting of the byPassInjection option
+  * in the config object.
+  ###
+  @get = ->
     t = definedModule
     definedModule = null
     return t
 
-  bypassInjection: (boolean)->
+  ###*
+  * @public
+  * When defined as true (default), whenever you set an injector wrapper, you set the defined module
+  * to whatever is returned by that wrapper, and when set to false you get the wrapper instead. This
+  * wrapper function is what allows you to inject dependencies by passing a single object to it
+  ###
+  @bypassInjection = (boolean)->
     config.bypassInjection = boolean
-    this
+    return this
 
-  setEnv: (environment)->
+  ###*
+  * @public
+  * Lets you set in a more declarative way that you want to bypass or not the injection system.
+  * @example require('commonjs-injector').setEnv('testing') should be used before running your
+  * test, and a regular require without .setEnv or require('commonjs-injector').setEnv('production')
+  * will set to true the bypassing.
+  ###
+  @setEnv = (environment)->
     ENV = environment.toLowerCase()
     switch ENV
-      when "production" then config.bypassInjection = true
-      when "testing" then config.bypassInjection = false
+      when "production" then  config.bypassInjection = true
+      when "testing" then  config.bypassInjection = false
       else
         errMsg = 'You should set the environment of the injector as either testing or production'
         throw new Error errMsg
 
     return this
 
-  getEnv: -> ENV
+  @getEnv = -> ENV
 
-  _import: (pathFragments...)->
+  ###*
+  * @private
+  * This function is added to the wrapperFn (i.e wrapperFn.import) to use instead of the node.js
+  * require function, this allows to bypass the actual module requiring by injecting the module
+  * in the dependencies obj of the wrapperFn.
+  ###
+  _import = (pathFragments...)->
     fragsLen = pathFragments.length
     moduleName = pathFragments[fragsLen - 1].split('/').pop()
 
+    # @dependencies refers to the one defined in the wrapperFn not in the injector module
     if @dependencies?[moduleName]?
       @dependencies[moduleName]
     else
+      # When no slashes found we assume is an npm module
       isNpmModule = pathFragments[0].indexOf('/') is -1
+      # When a single argument is provided to the import fn
+      # we check if is an npm module, if not we assume a regular
+      # one and provide the cwd as the base of the path
       if fragsLen is 1
         if isNpmModule
           filePath = pathFragments[0]
@@ -56,19 +90,20 @@ self =
 
       require(filePath)
 
-  _importGlobal: (globalName)->
+  ###*
+  * @private
+  * This function is added to the wrapperFn (i.e wrapperFn.importGlobal) to define global variables
+  * as local ones, this allows to inject whatever we want in wrapperFn as long as we use the same name.
+  * @example @importGlobal('async') will call global.async internally or the injected value
+  * @TODO Should allow subobject keys, meaning that you should be able to call @importGlobal('someGloba.key.anotherKey'),
+  * which right now you can't. Just first lvl globals.
+  ###
+  _importGlobal = (globalName)->
+    # @dependencies refers to the one defined in the wrapperFn not in the injector module
     if @dependencies?[globalName]?
       @dependencies[globalName]
     else
       global[globalName]
 
-
-# We define our public api inside the injector fn itself
-injector =
-  set: self.set
-  get: self.get
-  getEnv: self.getEnv
-  setEnv: self.setEnv
-  bypassInjection: self.bypassInjection
 
 module.exports = injector
