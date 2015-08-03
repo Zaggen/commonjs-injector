@@ -4,19 +4,19 @@
 
   expect = require('chai').expect;
 
-  global.injector = require('../index');
+  global.injector = require('../index.coffee');
 
-  mockPath = require.resolve('./mocks/mathModule');
+  mockPath = require.resolve('./mocks/mathModule.coffee');
 
-  mockWithImportPath = require.resolve('./mocks/mathModuleWithImport');
+  mockWithImportPath = require.resolve('./mocks/mathModuleWithImport.coffee');
 
-  mockWithNpmImportPath = require.resolve('./mocks/mathModuleWithNpmImport');
+  mockWithNpmImportPath = require.resolve('./mocks/mathModuleWithNpmImport.coffee');
 
-  mockWithInjectorImportPath = require.resolve('./mocks/mathModuleThatImportsAnInjectorWrapper');
+  mockWithInjectorImportPath = require.resolve('./mocks/mathModuleThatImportsAnInjectorWrapper.coffee');
 
   global.PI = Math.PI;
 
-  mockWithGlobalDep = require.resolve('./mocks/mockWithGlobalDep');
+  mockWithGlobalDep = require.resolve('./mocks/mockWithGlobalDep.coffee');
 
   describe('commonjs-injector Module', function() {
     it('should have a "set" method', function() {
@@ -124,7 +124,7 @@
         expect(mathModule.pi).to.equal('Mocked PI Value');
         return delete require.cache[mockWithImportPath];
       });
-      return it('should let you inject dependencies that are required as globals internally via @import.global', function() {
+      it('should let you inject dependencies that are required as globals internally via @import.global', function() {
         var mathModule, mathModuleWrapper;
         mathModuleWrapper = require(mockWithGlobalDep);
         mathModule = mathModuleWrapper({
@@ -132,6 +132,13 @@
         });
         expect(mathModule.pi).to.equal('Mocked PI Value');
         return delete require.cache[mockWithGlobalDep];
+      });
+      return describe('import method', function() {
+        return it('should let you import a module, and bypass the injector wrapper if there is one', function() {
+          var pi;
+          pi = injector["import"]('test/mocks/injectorPiModule');
+          return expect(pi).to.equal(Math.PI);
+        });
       });
     });
   });

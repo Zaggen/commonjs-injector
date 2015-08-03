@@ -1,11 +1,11 @@
 expect = require('chai').expect
-global.injector = require('../index')
-mockPath = require.resolve('./mocks/mathModule')
-mockWithImportPath = require.resolve('./mocks/mathModuleWithImport')
-mockWithNpmImportPath = require.resolve('./mocks/mathModuleWithNpmImport')
-mockWithInjectorImportPath = require.resolve('./mocks/mathModuleThatImportsAnInjectorWrapper')
+global.injector = require('../index.coffee')
+mockPath = require.resolve('./mocks/mathModule.coffee')
+mockWithImportPath = require.resolve('./mocks/mathModuleWithImport.coffee')
+mockWithNpmImportPath = require.resolve('./mocks/mathModuleWithNpmImport.coffee')
+mockWithInjectorImportPath = require.resolve('./mocks/mathModuleThatImportsAnInjectorWrapper.coffee')
 global.PI = Math.PI
-mockWithGlobalDep = require.resolve('./mocks/mockWithGlobalDep')
+mockWithGlobalDep = require.resolve('./mocks/mockWithGlobalDep.coffee')
 
 describe 'commonjs-injector Module', ->
 
@@ -117,3 +117,8 @@ describe 'commonjs-injector Module', ->
       expect(mathModule.pi).to.equal('Mocked PI Value')
       # TearDown
       delete require.cache[mockWithGlobalDep]
+
+    describe 'import method', ->
+      it 'should let you import a module, and bypass the injector wrapper if there is one', ->
+        pi = injector.import('test/mocks/injectorPiModule')
+        expect(pi).to.equal(Math.PI)
