@@ -4,7 +4,7 @@
     slice = [].slice;
 
   injector = require('def-inc').Module(function() {
-    var ENV, _import, _importGlobal, config, cwd, definedModule, path;
+    var ENV, _getModuleName, _import, _importGlobal, _wrapperImport, config, cwd, definedModule, path;
     definedModule = null;
     config = {
       bypassInjection: true
@@ -21,7 +21,7 @@
     * @param {function} wrapperFn - Function where the return value is what is exported later
      */
     this.set = function(wrapperFn) {
-      wrapperFn["import"] = _import;
+      wrapperFn["import"] = _wrapperImport;
       wrapperFn.importGlobal = _importGlobal;
       definedModule = config.bypassInjection ? wrapperFn.call(wrapperFn) : wrapperFn.bind(wrapperFn);
       return definedModule.__injectorWrapper__ = true;
@@ -83,7 +83,11 @@
      * Mimics node require behavior, with some subtle differences:
      * Files are required relative to the cwd
      */
-    this["import"] = function() {};
+    this["import"] = function() {
+      var pathFragments;
+      pathFragments = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+      return _import(pathFragments);
+    };
 
     /**
     * @private
@@ -91,31 +95,39 @@
     * require function, this allows to bypass the actual module requiring by injecting the module
     * in the dependencies obj of the wrapperFn.
      */
-    _import = function() {
-      var filePath, fragsLen, isNpmModule, module, moduleName, pathFragments, ref;
+    _wrapperImport = function() {
+      var moduleName, pathFragments, ref;
       pathFragments = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-      fragsLen = pathFragments.length;
-      moduleName = pathFragments[fragsLen - 1].split('/').pop();
+      moduleName = _getModuleName(pathFragments);
       if (((ref = this.dependencies) != null ? ref[moduleName] : void 0) != null) {
         return this.dependencies[moduleName];
       } else {
-        isNpmModule = pathFragments[0].indexOf('/') === -1;
-        if (fragsLen === 1) {
-          if (isNpmModule) {
-            filePath = pathFragments[0];
-          } else {
-            pathFragments.splice(0, 0, cwd);
-            filePath = path.resolve.apply(this, pathFragments);
-          }
+        return _import(pathFragments);
+      }
+    };
+    _getModuleName = function(pathFragments) {
+      var moduleName;
+      return moduleName = pathFragments[pathFragments.length - 1].split('/').pop();
+    };
+    _import = function(pathFragments) {
+      var filePath, fragsLen, isNpmModule, module;
+      fragsLen = pathFragments.length;
+      isNpmModule = pathFragments[0].indexOf('/') === -1;
+      if (fragsLen === 1) {
+        if (isNpmModule) {
+          filePath = pathFragments[0];
         } else {
+          pathFragments.splice(0, 0, cwd);
           filePath = path.resolve.apply(this, pathFragments);
         }
-        module = require(filePath);
-        if (module.__injectorWrapper__ != null) {
-          module = module();
-        }
-        return module;
+      } else {
+        filePath = path.resolve.apply(this, pathFragments);
       }
+      module = require(filePath);
+      if (module.__injectorWrapper__ != null) {
+        module = module();
+      }
+      return module;
     };
 
     /**

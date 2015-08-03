@@ -15,7 +15,7 @@ injector = require('def-inc').Module ->
   ###
   @set = (wrapperFn)->
     # We add the import method to the passed fn to allow the end user to call it with in that fn
-    wrapperFn.import = _import
+    wrapperFn.import = _wrapperImport
     wrapperFn.importGlobal = _importGlobal
     definedModule = if config.bypassInjection then wrapperFn.call(wrapperFn) else wrapperFn.bind(wrapperFn)
     definedModule.__injectorWrapper__ = true # Used by @import to check if the imported module is an injector wrapper
@@ -66,8 +66,8 @@ injector = require('def-inc').Module ->
    * Mimics node require behavior, with some subtle differences:
    * Files are required relative to the cwd
    ###
-  @import = ->
-
+  @import = (pathFragments...)->
+    _import(pathFragments)
 
   ###*
   * @private
@@ -75,34 +75,40 @@ injector = require('def-inc').Module ->
   * require function, this allows to bypass the actual module requiring by injecting the module
   * in the dependencies obj of the wrapperFn.
   ###
-  _import = (pathFragments...)->
-    fragsLen = pathFragments.length
-    moduleName = pathFragments[fragsLen - 1].split('/').pop()
-
+  _wrapperImport = (pathFragments...)->
+    moduleName = _getModuleName(pathFragments)
     # @dependencies refers to the one defined in the wrapperFn not in the injector module
     if @dependencies?[moduleName]?
       return @dependencies[moduleName]
     else
-      # When no slashes found we assume is an npm module
-      isNpmModule = pathFragments[0].indexOf('/') is -1
-      # When a single argument is provided to the import fn
-      # we check if is an npm module, if not we assume a regular
-      # one and provide the cwd as the base of the path
-      if fragsLen is 1
-        if isNpmModule
-          filePath = pathFragments[0]
-        else
-          pathFragments.splice(0, 0, cwd)
-          filePath = path.resolve.apply(@, pathFragments)
-      else
-        filePath = path.resolve.apply(@, pathFragments)
+      _import(pathFragments)
 
-      module = require(filePath)
-      # When the imported/required module is being wrapped by an injector fn, and the env is testing
-      # we should get its contents (The actual module, not the wrapper).
-      if module.__injectorWrapper__?
-        module = module()
-      return module
+  _getModuleName = (pathFragments)->
+    moduleName = pathFragments[pathFragments.length - 1].split('/').pop()
+
+  _import = (pathFragments)->
+    fragsLen = pathFragments.length
+
+    # When no slashes found we assume is an npm module
+    isNpmModule = pathFragments[0].indexOf('/') is -1
+    # When a single argument is provided to the import fn
+    # we check if is an npm module, if not we assume a regular
+    # one and provide the cwd as the base of the path
+    if fragsLen is 1
+      if isNpmModule
+        filePath = pathFragments[0]
+      else
+        pathFragments.splice(0, 0, cwd)
+        filePath = path.resolve.apply(@, pathFragments)
+    else
+      filePath = path.resolve.apply(@, pathFragments)
+
+    module = require(filePath)
+    # When the imported/required module is being wrapped by an injector fn, and the env is testing
+    # we should get its contents (The actual module, not the wrapper).
+    if module.__injectorWrapper__?
+      module = module()
+    return module
 
   ###*
   * @private
