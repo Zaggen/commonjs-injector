@@ -84,8 +84,6 @@ describe 'commonjs-injector Module', ->
       # TearDown
       delete require.cache[mockPath]
 
-    ###afterEach ->
-      delete require.cache[mockPath]###
 
     it 'should let you export a fn wrapper that accepts an object with dependencies and uses @import internally', ->
       mathModuleWrapper = require(mockWithImportPath)

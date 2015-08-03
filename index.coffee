@@ -18,6 +18,7 @@ injector = require('def-inc').Module ->
     wrapperFn.import = _import
     wrapperFn.importGlobal = _importGlobal
     definedModule = if config.bypassInjection then wrapperFn.call(wrapperFn) else wrapperFn.bind(wrapperFn)
+    definedModule.__injectorWrapper__ = true # Used by @import to check if the imported module is an injector wrapper
 
   ###*
   * @public
@@ -61,6 +62,14 @@ injector = require('def-inc').Module ->
   @getEnv = -> ENV
 
   ###*
+   * @public
+   * Mimics node require behavior, with some subtle differences:
+   * Files are required relative to the cwd
+   ###
+  @import = ->
+
+
+  ###*
   * @private
   * This function is added to the wrapperFn (i.e wrapperFn.import) to use instead of the node.js
   * require function, this allows to bypass the actual module requiring by injecting the module
@@ -72,7 +81,7 @@ injector = require('def-inc').Module ->
 
     # @dependencies refers to the one defined in the wrapperFn not in the injector module
     if @dependencies?[moduleName]?
-      @dependencies[moduleName]
+      return @dependencies[moduleName]
     else
       # When no slashes found we assume is an npm module
       isNpmModule = pathFragments[0].indexOf('/') is -1
@@ -88,7 +97,12 @@ injector = require('def-inc').Module ->
       else
         filePath = path.resolve.apply(@, pathFragments)
 
-      require(filePath)
+      module = require(filePath)
+      # When the imported/required module is being wrapped by an injector fn, and the env is testing
+      # we should get its contents (The actual module, not the wrapper).
+      if module.__injectorWrapper__?
+        module = module()
+      return module
 
   ###*
   * @private

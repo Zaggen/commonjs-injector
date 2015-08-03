@@ -23,7 +23,8 @@
     this.set = function(wrapperFn) {
       wrapperFn["import"] = _import;
       wrapperFn.importGlobal = _importGlobal;
-      return definedModule = config.bypassInjection ? wrapperFn.call(wrapperFn) : wrapperFn.bind(wrapperFn);
+      definedModule = config.bypassInjection ? wrapperFn.call(wrapperFn) : wrapperFn.bind(wrapperFn);
+      return definedModule.__injectorWrapper__ = true;
     };
 
     /**
@@ -78,13 +79,20 @@
     };
 
     /**
+     * @public
+     * Mimics node require behavior, with some subtle differences:
+     * Files are required relative to the cwd
+     */
+    this["import"] = function() {};
+
+    /**
     * @private
     * This function is added to the wrapperFn (i.e wrapperFn.import) to use instead of the node.js
     * require function, this allows to bypass the actual module requiring by injecting the module
     * in the dependencies obj of the wrapperFn.
      */
     _import = function() {
-      var filePath, fragsLen, isNpmModule, moduleName, pathFragments, ref;
+      var filePath, fragsLen, isNpmModule, module, moduleName, pathFragments, ref;
       pathFragments = 1 <= arguments.length ? slice.call(arguments, 0) : [];
       fragsLen = pathFragments.length;
       moduleName = pathFragments[fragsLen - 1].split('/').pop();
@@ -102,7 +110,11 @@
         } else {
           filePath = path.resolve.apply(this, pathFragments);
         }
-        return require(filePath);
+        module = require(filePath);
+        if (module.__injectorWrapper__ != null) {
+          module = module();
+        }
+        return module;
       }
     };
 
