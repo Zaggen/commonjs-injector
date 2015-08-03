@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "mathModuleThatImportsAnInjectorWrapper.js",
+  "sourceRoot": "",
+  "sources": [
+    "mathModuleThatImportsAnInjectorWrapper.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;EAAA,QAAQ,CAAC,GAAT,CAAa,SAAC,YAAD;AACX,QAAA;IADY,IAAC,CAAA,eAAD;IACZ,EAAA,GAAK,IAAC,CAAA,QAAA,CAAD,CAAQ,SAAR,EAAmB,oBAAnB;IAGL,IAAA,GACE;MAAA,MAAA,EAAQ,SAAC,CAAD;eAAO,CAAA,GAAI;MAAX,CAAR;MACA,EAAA,EAAI,EADJ;;AAGF,WAAO;EARI,CAAb;;EAUA,MAAM,CAAC,OAAP,GAAiB,QAAQ,CAAC,GAAT,CAAA;AAVjB"
+}
