@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "injectorPiModule.js",
+  "sourceRoot": "",
+  "sources": [
+    "injectorPiModule.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;EAAA,QAAQ,CAAC,GAAT,CAAa,SAAC,YAAD;IAAC,IAAC,CAAA,eAAD;AAAiB,WAAO,IAAI,CAAC;EAA9B,CAAb;;EAEA,MAAM,CAAC,OAAP,GAAiB,QAAQ,CAAC,GAAT,CAAA;AAFjB"
+}
