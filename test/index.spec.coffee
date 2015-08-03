@@ -3,6 +3,7 @@ global.injector = require('../index')
 mockPath = require.resolve('./mocks/mathModule')
 mockWithImportPath = require.resolve('./mocks/mathModuleWithImport')
 mockWithNpmImportPath = require.resolve('./mocks/mathModuleWithNpmImport')
+mockWithInjectorImportPath = require.resolve('./mocks/mathModuleThatImportsAnInjectorWrapper')
 global.PI = Math.PI
 mockWithGlobalDep = require.resolve('./mocks/mockWithGlobalDep')
 
@@ -13,6 +14,9 @@ describe 'commonjs-injector Module', ->
 
   it 'should have a "get" method', ->
     expect(injector.get).to.be.a('function')
+
+  it 'should have an "import" method', ->
+    expect(injector.import).to.be.a('function')
 
   it 'should have a "bypassInjection" method', ->
     expect(injector.bypassInjection).to.be.a('function')
@@ -80,8 +84,20 @@ describe 'commonjs-injector Module', ->
       # TearDown
       delete require.cache[mockPath]
 
+    ###afterEach ->
+      delete require.cache[mockPath]###
+
     it 'should let you export a fn wrapper that accepts an object with dependencies and uses @import internally', ->
       mathModuleWrapper = require(mockWithImportPath)
+      expect(mathModuleWrapper).to.be.an('function')
+      mathModule = mathModuleWrapper()
+      expect(mathModule).to.be.an('object')
+      expect(mathModule.pi).to.equal(Math.PI)
+      # TearDown
+      delete require.cache[mockWithImportPath]
+
+    it 'should let you export a fn wrapper that accepts an object with dependencies(wrapped with an injector fn) and uses @import internally', ->
+      mathModuleWrapper = require(mockWithInjectorImportPath)
       expect(mathModuleWrapper).to.be.an('function')
       mathModule = mathModuleWrapper()
       expect(mathModule).to.be.an('object')
