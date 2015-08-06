@@ -7,6 +7,7 @@ mockWithInjectorImportPath = require.resolve('./mocks/mathModuleThatImportsAnInj
 global.PI = Math.PI
 mockWithGlobalDep = require.resolve('./mocks/mockWithGlobalDep.coffee')
 
+
 describe 'commonjs-injector Module', ->
 
   it 'should have a "set" method', ->
