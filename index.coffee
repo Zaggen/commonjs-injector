@@ -18,7 +18,13 @@ injector = require('def-inc').Module ->
     wrapperFn.import = _wrapperImport
     wrapperFn.importGlobal = _importGlobal
     definedModule = if config.bypassInjection then wrapperFn.call(wrapperFn) else wrapperFn.bind(wrapperFn)
-    definedModule.__injectorWrapper__ = true # Used by @import to check if the imported module is an injector wrapper
+
+    if config.bypassInjection
+      definedModule = wrapperFn.call(wrapperFn)
+    else
+      definedModule = wrapperFn.bind(wrapperFn)
+      # Used by @import to check if the imported module is an injector wrapper
+      definedModule.__injectorWrapper__ = true
 
   ###*
   * @public
