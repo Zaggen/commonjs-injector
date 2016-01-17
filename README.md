@@ -25,6 +25,24 @@ injector.set (@dependencies)->
 
 module.exports = injector.get()
 ```
+
+You can omit `injector.get()` by exporting what is returned by `injector.set`
+```coffeescript
+# api/abstract/AuthModel.coffee
+module.exports = injector.set (@dependencies)->
+  # Module Dependencies
+  def = @import('def-inc')
+
+  # Module
+  authModel = def.Obj(
+    encrypPassword: ->
+      #some code
+  )
+  
+  return authModel
+
+```
+
 - Here we import more modules, @import, works almost the same as require which this fn uses internally.
 ```coffeescript
 # api/models/Product.coffee
