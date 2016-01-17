@@ -26,6 +26,8 @@ injector = require('def-inc').Module ->
       # Used by @import to check if the imported module is an injector wrapper
       definedModule.__injectorWrapper__ = true
 
+    return definedModule
+
   ###*
   * @public
   * Returns the defined module, which could be the wrapper fn defined in the @set method
@@ -130,6 +132,7 @@ injector = require('def-inc').Module ->
       @dependencies[globalName]
     else
       global[globalName]
+
 
 
 module.exports = injector
