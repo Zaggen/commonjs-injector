@@ -7,7 +7,6 @@ mockWithInjectorImportPath = require.resolve('./mocks/mathModuleThatImportsAnInj
 global.PI = Math.PI
 mockWithGlobalDep = require.resolve('./mocks/mockWithGlobalDep.coffee')
 
-
 describe 'commonjs-injector Module', ->
 
   it 'should have a "set" method', ->
@@ -43,6 +42,15 @@ describe 'commonjs-injector Module', ->
     expect(injector.setEnv('testing')).to.equal(injector)
     expect(injector.getEnv()).to.equal('testing')
 
+  describe '.set', ->
+    it 'should return the defined module', ->
+      module = injector.set((@dependencies)->
+        return {
+          foo: 'bar'
+        }
+      )()
+      expect(module.foo).to.equal('bar')
+
   describe 'When bypassInjection is set to true (default)', ->
     beforeEach ->
       injector.bypassInjection(true)
@@ -66,7 +74,7 @@ describe 'commonjs-injector Module', ->
       # TearDown
       delete require.cache[mockWithNpmImportPath]
 
-    it 'should let you use @import.global inside the injector fn to require a global', ->
+    it 'should let you use @importGlobal inside the injector fn to require a global', ->
       mathModule = require(mockWithGlobalDep)
       expect(mathModule.pi).to.equal(global.PI)
       # TearDown
@@ -112,7 +120,7 @@ describe 'commonjs-injector Module', ->
       # TearDown
       delete require.cache[mockWithImportPath]
 
-    it 'should let you inject dependencies that are required as globals internally via @import.global', ->
+    it 'should let you inject dependencies that are required as globals internally via @importGlobal()', ->
       mathModuleWrapper = require(mockWithGlobalDep)
       mathModule = mathModuleWrapper({'PI': 'Mocked PI Value'})
       expect(mathModule.pi).to.equal('Mocked PI Value')
