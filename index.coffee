@@ -1,4 +1,4 @@
-injector = require('def-inc').Module ->
+injector = require('def-type').Module ->
   # Private Shared data
   definedModule = null
   config = {bypassInjection: true}

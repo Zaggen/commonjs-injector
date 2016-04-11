@@ -3,7 +3,7 @@
   var injector,
     slice = [].slice;
 
-  injector = require('def-inc').Module(function() {
+  injector = require('def-type').Module(function() {
     var ENV, _getModuleName, _import, _importGlobal, _wrapperImport, config, cwd, definedModule, path;
     definedModule = null;
     config = {

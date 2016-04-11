@@ -1,6 +1,6 @@
 injector.set (@dependencies)->
   pi = @import(__dirname, './PiModule')
-  def = @import('def-inc')
+  def = @import('def-type')
   math = def.Object(
     square: (x)->  x * x
     pi: pi

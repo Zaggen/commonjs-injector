@@ -3,7 +3,7 @@
   injector.set(function(dependencies) {
     var def, math, pi;
     this.dependencies = dependencies;
-    pi = this.importGlobal('PI');
+    pi = this["import"](__dirname, './PiModule');
     def = this["import"]('def-type');
     math = def.Object({
       square: function(x) {
@@ -18,4 +18,4 @@
 
 }).call(this);
 
-//# sourceMappingURL=mockWithGlobalDep.js.map
+//# sourceMappingURL=mathModuleWithNpmImport.js.map
