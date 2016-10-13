@@ -13,7 +13,7 @@ global.injector = require('commonjs-injector').setEnv('production')
 exception of the injector call, and that calls to @import that will work similar to node require()
 ```coffeescript
 # api/abstract/AuthModel.coffee
-injector.set (@dependencies)->
+injector.set ->
   # Module Dependencies
   def = @import('def-inc')
 
@@ -29,7 +29,7 @@ module.exports = injector.get()
 You can omit `injector.get()` by exporting what is returned by `injector.set`
 ```coffeescript
 # api/abstract/AuthModel.coffee
-module.exports = injector.set (@dependencies)->
+module.exports = injector.set ->
   # Module Dependencies
   def = @import('def-inc')
 
@@ -46,7 +46,7 @@ module.exports = injector.set (@dependencies)->
 - Here we import more modules, @import, works almost the same as require which this fn uses internally.
 ```coffeescript
 # api/models/Product.coffee
-injector.set (@dependencies)->
+injector.set ->
   # Module Dependencies
   def       = @import('def-inc')
   baseModel = @import(__dirname, './abtract/baseModel') # Relative to the folder
@@ -94,3 +94,7 @@ you disable the bypassing by changing the environment or directly calling "byPas
 that node require caches files already required, so setting injector.byPassInjection(false) after requiring a module
 that uses the injector will use the default value if called later and not the new setted value, this is not a bug,
 is the expected behavior since we don't want to disable caching, in that case you can remove the item from the cache.
+
+###Changelog###
+- 0.4.0: Now you don't have to set @dependencies on the arguments list, this benefits js users since now there is
+nothing to set
