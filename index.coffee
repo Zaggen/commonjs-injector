@@ -135,6 +135,4 @@ injector = require('def-type').Module ->
     else
       global[globalName]
 
-
-
 module.exports = injector
