@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "mathModuleWithImport.js",
+  "sourceRoot": "",
+  "sources": [
+    "mathModuleWithImport.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;EAAA,QAAQ,CAAC,GAAT,CAAa,SAAA;AACX,QAAA;IAAA,EAAA,GAAK,IAAC,EAAA,MAAA,EAAD,CAAQ,SAAR,EAAmB,YAAnB;IACL,IAAA,GACE;MAAA,MAAA,EAAQ,SAAC,CAAD;eAAO,CAAA,GAAI;MAAX,CAAR;MACA,EAAA,EAAI,EADJ;;AAGF,WAAO;EANI,CAAb;;EAQA,MAAM,CAAC,OAAP,GAAiB,QAAQ,CAAC,GAAT,CAAA;AARjB"
+}

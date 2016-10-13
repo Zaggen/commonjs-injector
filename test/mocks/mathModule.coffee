@@ -1,4 +1,4 @@
-injector.set (@dependencies)->
+injector.set ->
   math =
     square: (x)->  x * x
 

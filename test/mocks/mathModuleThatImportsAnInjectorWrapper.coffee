@@ -1,4 +1,4 @@
-injector.set (@dependencies)->
+injector.set ->
   pi = @import(__dirname, './injectorPiModule')
 
   #[Exportable Module]

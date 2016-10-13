@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "mathModule.js",
+  "sourceRoot": "",
+  "sources": [
+    "mathModule.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;EAAA,QAAQ,CAAC,GAAT,CAAa,SAAA;AACX,QAAA;IAAA,IAAA,GACE;MAAA,MAAA,EAAQ,SAAC,CAAD;eAAO,CAAA,GAAI;MAAX,CAAR;;AAEF,WAAO;EAJI,CAAb;;EAMA,MAAM,CAAC,OAAP,GAAiB,QAAQ,CAAC,GAAT,CAAA;AANjB"
+}

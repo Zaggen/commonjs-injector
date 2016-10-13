@@ -1,4 +1,4 @@
-injector.set (@dependencies)->
+injector.set ->
   pi = @import(__dirname, './PiModule')
   def = @import('def-type')
   math = def.Object(

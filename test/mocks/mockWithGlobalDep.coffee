@@ -1,4 +1,4 @@
-injector.set (@dependencies)->
+injector.set ()->
   pi = @importGlobal('PI')
   def = @import('def-type')
   math = def.Object(
