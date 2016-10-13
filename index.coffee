@@ -17,12 +17,14 @@ injector = require('def-type').Module ->
     # We add the import method to the passed fn to allow the end user to call it with in that fn
     wrapperFn.import = _wrapperImport
     wrapperFn.importGlobal = _importGlobal
-    definedModule = if config.bypassInjection then wrapperFn.call(wrapperFn) else wrapperFn.bind(wrapperFn)
 
     if config.bypassInjection
       definedModule = wrapperFn.call(wrapperFn)
     else
-      definedModule = wrapperFn.bind(wrapperFn)
+      #definedModule = wrapperFn.bind(wrapperFn)
+      definedModule = (dependencies)->
+        wrapperFn.dependencies = dependencies;
+        wrapperFn.call(wrapperFn)
       # Used by @import to check if the imported module is an injector wrapper
       definedModule.__injectorWrapper__ = true
 
